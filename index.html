@@ -1,0 +1,41 @@
+<!doctype html>
+<title>ULID Generator</title>
+<meta charset="utf-8">
+<style>
+body {
+    text-align: center;
+}
+#generate {
+    font-size: 20px;
+    font-weight: bold;
+}
+#amount {
+    font-size: 20px;
+    width: 75px;
+}
+#output {
+    font-family: monospace;
+    font-size: 18px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+}
+</style>
+<script src="ulid.js"></script>
+<button id="generate">Generate</button>
+<input id="amount" value="16"></input>
+<div id="output"></div>
+<script>
+let generator = new ULID();
+let generate = document.querySelector('#generate');
+let amount = document.querySelector('#amount');
+let output = document.querySelector('#output');
+function go() {
+    let samples = [];
+    let n = parseFloat(amount.value) | 0;
+    for (let i = 0; i < n; i++)
+        samples.push(generator());
+    output.textContent = samples.join('\n');
+}
+generate.addEventListener('click', go);
+go();
+</script>
