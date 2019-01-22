@@ -1,0 +1,51 @@
+<!doctype html>
+<title>ULID Generator Test</title>
+<meta charset="utf-8">
+<style>
+body {
+    text-align: center;
+}
+#result {
+    background-color: yellow;
+    color: white;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 15px;
+}
+#message {
+    font-family: monospace;
+    font-size: 18px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+}
+</style>
+<script src="ulid.js"></script>
+<div id="result">????</div>
+<div id="message"></div>
+<script>
+let generator = new ULID();
+let prev = generator();
+let next = null;
+let success = true;
+for (let i = 0; success && i < 256 * 1024; i++) {
+    next = generator();
+    if (next <= prev)
+        success = false;
+    else
+        prev = next;
+}
+let result = document.querySelector('#result');
+let message = document.querySelector('#message');
+result.textContent = success ? 'PASS' : 'FAIL';
+result.style.backgroundColor = success ? 'green' : 'red';
+if (!success) {
+    message.textContent = prev  + ' >= ' + next;
+} else {
+    let samples = [];
+    for (let i = 0; i < 16; i++)
+        samples.push(generator());
+    message.textContent = samples.join('\n');
+}
+</script>
