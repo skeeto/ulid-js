@@ -25,17 +25,20 @@ body {
 <div id="result">????</div>
 <div id="message"></div>
 <script>
+const ITERATIONS = 1024 * 1024;
 let generator = new ULID();
 let prev = generator();
 let next = null;
 let success = true;
-for (let i = 0; success && i < 256 * 1024; i++) {
+let start = Date.now();
+for (let i = 0; success && i < ITERATIONS; i++) {
     next = generator();
     if (next <= prev)
         success = false;
     else
         prev = next;
 }
+let total = (Date.now() - start) / 1000;
 let result = document.querySelector('#result');
 let message = document.querySelector('#message');
 result.textContent = success ? 'PASS' : 'FAIL';
@@ -43,7 +46,9 @@ result.style.backgroundColor = success ? 'green' : 'red';
 if (!success) {
     message.textContent = prev  + ' >= ' + next;
 } else {
-    let samples = [];
+    let samples = [
+        ~~(ITERATIONS / total / 1e3) + ' kULID/s'
+    ];
     for (let i = 0; i < 16; i++)
         samples.push(generator());
     message.textContent = samples.join('\n');
